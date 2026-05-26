@@ -1,0 +1,139 @@
+/* Tiptap Editor / Viewer Styles */
+
+.tiptap-content {
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.tiptap-content h1 { font-size: 1.5em; font-weight: 700; margin: 1em 0 0.5em; }
+.tiptap-content h2 { font-size: 1.3em; font-weight: 600; margin: 0.8em 0 0.4em; }
+.tiptap-content h3 { font-size: 1.1em; font-weight: 600; margin: 0.6em 0 0.3em; }
+
+.tiptap-content p { margin: 0.4em 0; }
+
+.tiptap-content ul,
+.tiptap-content ol {
+    padding-left: 1.5em;
+    margin: 0.4em 0;
+}
+
+.tiptap-content li { margin: 0.15em 0; }
+
+.tiptap-content blockquote {
+    border-left: 3px solid var(--border);
+    padding-left: 1em;
+    margin: 0.5em 0;
+    color: var(--muted-foreground);
+}
+
+.tiptap-content code {
+    background: var(--muted);
+    border-radius: 4px;
+    padding: 0.15em 0.4em;
+    font-size: 0.9em;
+}
+
+.tiptap-content pre {
+    background: var(--muted);
+    border-radius: 8px;
+    padding: 0.75em 1em;
+    margin: 0.5em 0;
+    overflow-x: auto;
+}
+
+.tiptap-content pre code {
+    background: none;
+    padding: 0;
+    font-size: 0.85em;
+}
+
+/* Tables */
+.tiptap-content table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0.5em 0;
+}
+
+.tiptap-content th,
+.tiptap-content td {
+    border: 1px solid var(--border);
+    padding: 0.4em 0.75em;
+    text-align: left;
+    font-size: 0.9em;
+}
+
+.tiptap-content th {
+    background: var(--muted);
+    font-weight: 600;
+}
+
+/* Task lists */
+.tiptap-content ul[data-type="taskList"] {
+    list-style: none;
+    padding-left: 0;
+}
+
+.tiptap-content ul[data-type="taskList"] li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5em;
+}
+
+.tiptap-content ul[data-type="taskList"] li > label {
+    margin-top: 0.2em;
+}
+
+/* Horizontal rule */
+.tiptap-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 1em 0;
+}
+
+/* Links */
+.tiptap-content a {
+    color: var(--primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+/* Images */
+.tiptap-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 0.5em 0;
+}
+
+/* Mark / highlight */
+.tiptap-content mark {
+    background: hsl(var(--primary) / 0.15);
+    border-radius: 2px;
+    padding: 0.1em 0.2em;
+}
+
+/* Collaboration Cursor */
+.collaboration-cursor__caret {
+    border-left: 2px solid;
+    border-right: none;
+    margin-left: -1px;
+    margin-right: -1px;
+    pointer-events: none;
+    position: relative;
+    word-break: normal;
+}
+
+.collaboration-cursor__label {
+    border-radius: 6px 6px 6px 0;
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    left: -1px;
+    line-height: 1;
+    padding: 2px 6px;
+    position: absolute;
+    top: -1.4em;
+    white-space: nowrap;
+    user-select: none;
+    pointer-events: none;
+}

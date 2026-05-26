@@ -1,0 +1,524 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* --- Fonts --- */
+  --font-sans: "InterVariable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, monospace;
+
+  /* --- Radius --- */
+  --radius: 0.875rem;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* --- Core semantic colors: light --- */
+  --background: oklch(0.985 0.003 255);
+  --foreground: oklch(0.215 0.015 255);
+
+  --card: oklch(0.972 0.004 255);
+  --card-foreground: oklch(0.215 0.015 255);
+
+  --popover: oklch(0.99 0.002 255);
+  --popover-foreground: oklch(0.215 0.015 255);
+
+  --primary: oklch(0.56 0.16 257);
+  --primary-foreground: oklch(0.985 0.003 255);
+
+  --secondary: oklch(0.955 0.006 255);
+  --secondary-foreground: oklch(0.24 0.012 255);
+
+  --muted: oklch(0.955 0.006 255);
+  --muted-foreground: oklch(0.52 0.008 255);
+
+  --accent: oklch(0.95 0.02 257);
+  --accent-foreground: oklch(0.32 0.05 257);
+
+  --destructive: oklch(0.58 0.19 25);
+  --destructive-foreground: oklch(0.98 0.003 255);
+
+  --success: oklch(0.66 0.12 154);
+  --success-foreground: oklch(0.18 0.01 154);
+
+  --warning: oklch(0.75 0.12 78);
+  --warning-foreground: oklch(0.23 0.02 78);
+
+  --info: oklch(0.67 0.1 240);
+  --info-foreground: oklch(0.18 0.02 240);
+
+  --border: oklch(0.885 0.007 255);
+  --input: oklch(0.885 0.007 255);
+  --ring: oklch(0.60 0.14 257);
+
+  /* --- Data-viz --- */
+  --chart-1: oklch(0.60 0.16 257);
+  --chart-2: oklch(0.70 0.09 220);
+  --chart-3: oklch(0.72 0.10 154);
+  --chart-4: oklch(0.78 0.11 78);
+  --chart-5: oklch(0.64 0.11 20);
+
+  /* --- Workspace tokens --- */
+  --app-bg: var(--background);
+  --app-panel: oklch(0.975 0.004 255);
+  --app-panel-elevated: oklch(0.992 0.002 255);
+  --app-panel-soft: oklch(0.962 0.005 255);
+  --app-hairline: oklch(0.90 0.006 255);
+
+  --sidebar-background: oklch(0.968 0.004 255);
+  --sidebar-foreground: oklch(0.24 0.012 255);
+  --sidebar-border: oklch(0.89 0.006 255);
+  --sidebar-accent: oklch(0.945 0.015 257);
+  --sidebar-accent-foreground: oklch(0.29 0.05 257);
+  --sidebar-active: oklch(0.94 0.018 257);
+
+  --header-background: color-mix(in oklab, var(--background) 88%, white);
+  --toolbar-background: color-mix(in oklab, var(--background) 92%, white);
+  --right-rail-background: oklch(0.978 0.003 255);
+
+  /* --- Chat tokens --- */
+  --chat-user-bubble: oklch(0.95 0.02 257);
+  --chat-user-foreground: oklch(0.26 0.04 257);
+  --chat-assistant-bubble: oklch(0.968 0.004 255);
+  --chat-assistant-foreground: var(--foreground);
+  --chat-system-bubble: oklch(0.955 0.006 255);
+  --chat-thread-divider: oklch(0.90 0.006 255);
+  --chat-composer: oklch(0.995 0.001 255);
+  --chat-composer-border: oklch(0.88 0.007 255);
+  --chat-composer-toolbar: oklch(0.972 0.004 255);
+
+  /* --- Project tokens --- */
+  --project-card: var(--card);
+  --project-card-hover: oklch(0.962 0.007 255);
+  --project-card-selected: oklch(0.945 0.018 257);
+  --project-row-hover: oklch(0.968 0.005 255);
+  --project-row-selected: oklch(0.945 0.018 257);
+  --project-progress-bg: oklch(0.90 0.005 255);
+  --project-progress-fill: var(--primary);
+
+  /* --- Status surfaces --- */
+  --surface-success: color-mix(in oklab, var(--success) 12%, white);
+  --surface-warning: color-mix(in oklab, var(--warning) 14%, white);
+  --surface-danger: color-mix(in oklab, var(--destructive) 12%, white);
+  --surface-info: color-mix(in oklab, var(--info) 12%, white);
+
+  /* --- Shadows --- */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 6px 16px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 12px 28px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 24px 48px rgba(15, 23, 42, 0.12);
+
+  /* --- Motion --- */
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-productive: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 140ms;
+  --dur-base: 180ms;
+  --dur-slow: 240ms;
+
+  /* --- Layout --- */
+  --header-height: 3.5rem;
+  --toolbar-height: 3rem;
+  --sidebar-width: 17rem;
+  --sidebar-width-collapsed: 4.25rem;
+  --right-rail-width: 22rem;
+  --content-reading-width: 48rem;
+  --content-wide-width: 88rem;
+  --panel-padding: 1rem;
+  --panel-padding-lg: 1.25rem;
+  --chat-bubble-radius: 1.125rem;
+  --control-height-sm: 2rem;
+  --control-height-md: 2.5rem;
+  --control-height-lg: 2.75rem;
+
+  /* --- Density --- */
+  --row-height-list: 2.75rem;
+  --row-height-table: 2.75rem;
+  --panel-gap: 1rem;
+}
+
+.dark {
+  --background: oklch(0.16 0.01 255);
+  --foreground: oklch(0.94 0.003 255);
+
+  --card: oklch(0.19 0.012 255);
+  --card-foreground: oklch(0.94 0.003 255);
+
+  --popover: oklch(0.20 0.012 255);
+  --popover-foreground: oklch(0.94 0.003 255);
+
+  --primary: oklch(0.70 0.13 257);
+  --primary-foreground: oklch(0.17 0.01 255);
+
+  --secondary: oklch(0.23 0.014 255);
+  --secondary-foreground: oklch(0.92 0.003 255);
+
+  --muted: oklch(0.23 0.014 255);
+  --muted-foreground: oklch(0.70 0.008 255);
+
+  --accent: oklch(0.28 0.03 257);
+  --accent-foreground: oklch(0.90 0.01 257);
+
+  --destructive: oklch(0.65 0.18 25);
+  --destructive-foreground: oklch(0.16 0.01 255);
+
+  --success: oklch(0.74 0.12 154);
+  --success-foreground: oklch(0.17 0.01 154);
+
+  --warning: oklch(0.80 0.11 78);
+  --warning-foreground: oklch(0.18 0.01 78);
+
+  --info: oklch(0.76 0.09 240);
+  --info-foreground: oklch(0.16 0.01 240);
+
+  --border: oklch(0.31 0.012 255);
+  --input: oklch(0.31 0.012 255);
+  --ring: oklch(0.72 0.12 257);
+
+  --chart-1: oklch(0.73 0.14 257);
+  --chart-2: oklch(0.75 0.10 220);
+  --chart-3: oklch(0.78 0.10 154);
+  --chart-4: oklch(0.80 0.10 78);
+  --chart-5: oklch(0.72 0.11 20);
+
+  --app-bg: var(--background);
+  --app-panel: oklch(0.19 0.012 255);
+  --app-panel-elevated: oklch(0.22 0.013 255);
+  --app-panel-soft: oklch(0.21 0.013 255);
+  --app-hairline: oklch(0.30 0.012 255);
+
+  --sidebar-background: oklch(0.18 0.011 255);
+  --sidebar-foreground: oklch(0.88 0.004 255);
+  --sidebar-border: oklch(0.28 0.011 255);
+  --sidebar-accent: oklch(0.27 0.03 257);
+  --sidebar-accent-foreground: oklch(0.91 0.01 257);
+  --sidebar-active: oklch(0.30 0.035 257);
+
+  --header-background: color-mix(in oklab, var(--background) 92%, black);
+  --toolbar-background: color-mix(in oklab, var(--background) 95%, black);
+  --right-rail-background: oklch(0.18 0.011 255);
+
+  --chat-user-bubble: oklch(0.29 0.036 257);
+  --chat-user-foreground: oklch(0.92 0.008 257);
+  --chat-assistant-bubble: oklch(0.21 0.012 255);
+  --chat-assistant-foreground: var(--foreground);
+  --chat-system-bubble: oklch(0.23 0.013 255);
+  --chat-thread-divider: oklch(0.29 0.011 255);
+  --chat-composer: oklch(0.20 0.011 255);
+  --chat-composer-border: oklch(0.31 0.012 255);
+  --chat-composer-toolbar: oklch(0.22 0.012 255);
+
+  --project-card: var(--card);
+  --project-card-hover: oklch(0.22 0.013 255);
+  --project-card-selected: oklch(0.28 0.03 257);
+  --project-row-hover: oklch(0.21 0.013 255);
+  --project-row-selected: oklch(0.28 0.03 257);
+  --project-progress-bg: oklch(0.28 0.011 255);
+  --project-progress-fill: var(--primary);
+
+  --surface-success: color-mix(in oklab, var(--success) 14%, black);
+  --surface-warning: color-mix(in oklab, var(--warning) 14%, black);
+  --surface-danger: color-mix(in oklab, var(--destructive) 14%, black);
+  --surface-info: color-mix(in oklab, var(--info) 14%, black);
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.18);
+  --shadow-sm: 0 10px 24px rgba(0, 0, 0, 0.24);
+  --shadow-md: 0 20px 40px rgba(0, 0, 0, 0.32);
+  --shadow-lg: 0 28px 64px rgba(0, 0, 0, 0.40);
+}
+
+/* --- Kontrast-Stufen ---------------------------------------------------- */
+/* Standard: wie definiert (keine Klasse noetig)                             */
+/* Mittel: deutlich kraeftigere Kontraste fuer Laptop im Freien              */
+/* Hoch: maximaler Kontrast fuer schwierige Lichtverhaeltnisse               */
+
+.contrast-medium {
+  --foreground: oklch(0.12 0.02 255);
+  --muted-foreground: oklch(0.38 0.012 255);
+  --border: oklch(0.78 0.01 255);
+  --input: oklch(0.78 0.01 255);
+  --sidebar-foreground: oklch(0.15 0.015 255);
+  --sidebar-border: oklch(0.78 0.01 255);
+  --card-foreground: oklch(0.12 0.02 255);
+  --popover-foreground: oklch(0.12 0.02 255);
+  --secondary-foreground: oklch(0.15 0.015 255);
+}
+
+.contrast-medium.dark {
+  --foreground: oklch(0.97 0.002 255);
+  --muted-foreground: oklch(0.78 0.006 255);
+  --border: oklch(0.38 0.012 255);
+  --input: oklch(0.38 0.012 255);
+  --sidebar-foreground: oklch(0.96 0.003 255);
+  --sidebar-border: oklch(0.38 0.012 255);
+}
+
+.contrast-high {
+  --foreground: oklch(0.05 0.02 255);
+  --muted-foreground: oklch(0.28 0.015 255);
+  --border: oklch(0.62 0.015 255);
+  --input: oklch(0.62 0.015 255);
+  --sidebar-foreground: oklch(0.08 0.02 255);
+  --sidebar-border: oklch(0.62 0.015 255);
+  --card-foreground: oklch(0.05 0.02 255);
+  --popover-foreground: oklch(0.05 0.02 255);
+  --secondary-foreground: oklch(0.08 0.02 255);
+  --muted: oklch(0.92 0.008 255);
+  --app-hairline: oklch(0.72 0.01 255);
+}
+
+.contrast-high.dark {
+  --foreground: oklch(0.99 0.001 255);
+  --muted-foreground: oklch(0.85 0.004 255);
+  --border: oklch(0.50 0.015 255);
+  --input: oklch(0.50 0.015 255);
+  --sidebar-foreground: oklch(0.99 0.001 255);
+  --sidebar-border: oklch(0.50 0.015 255);
+  --muted: oklch(0.24 0.012 255);
+}
+
+[data-density="compact"] {
+  --row-height-list: 2.375rem;
+  --row-height-table: 2.375rem;
+  --panel-gap: 0.75rem;
+  --panel-padding: 0.875rem;
+}
+
+@theme inline {
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-sidebar-background: var(--sidebar-background);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html, body, #root {
+    height: 100%;
+  }
+
+  html {
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+    /* Bounce-Scroll am Seitenrand verhindern, damit horizontaler Wisch im
+       Chat nicht die Browser-Back-Geste ausloest und Pull-to-Refresh
+       stumm bleibt. */
+    overscroll-behavior: contain;
+  }
+
+  /* Tap-Highlight (iOS) entfernen — wir handhaben aktive Zustaende selbst. */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Buttons und ihre Aequivalente nicht markierbar — sonst kommt beim
+     Long-Press die System-Textauswahl dazwischen. */
+  button, [role="button"] {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--primary) 22%, transparent);
+  }
+}
+
+/* Mobile-spezifische Fixes — gelten nur auf schmalen Viewports. */
+@media (max-width: 767px) {
+  /* Font-Size < 16px triggert auf iOS einen Auto-Zoom beim Input-Focus.
+     Mit 16px bleibt die Seite stabil und der User kann tippen ohne dass
+     das Layout hin- und her springt. */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"],
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95) translateY(-4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* React Flow — force edge visibility over Tailwind resets */
+.react-flow__edge-path {
+  stroke: #b1b1b7 !important;
+  stroke-width: 2 !important;
+  fill: none !important;
+}
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: #3b82f6 !important;
+  stroke-width: 3 !important;
+}
+.react-flow__edge.animated .react-flow__edge-path {
+  stroke-dasharray: 5 !important;
+  animation: rf-dash 0.5s linear infinite !important;
+}
+.react-flow__connection-path {
+  stroke: #3b82f6 !important;
+  stroke-width: 2 !important;
+  fill: none !important;
+}
+.react-flow__edgemarker {
+  fill: #b1b1b7 !important;
+}
+@keyframes rf-dash {
+  to { stroke-dashoffset: -10; }
+}
+
+/* ---------------------------------------------------------------------
+ * Icons (lucide-react) — sanfte Schaerfung
+ *
+ * shape-rendering: geometricPrecision verhindert subpixel-blur durch
+ * flex/translate-Layout. KEINE stroke-width-Override — sonst weichen
+ * Toolbar-Icons von den Welt-Icons in der Sidebar ab.
+ *
+ * .icon-crisp: punktuell fuer Toolbar-Icons mit primaer orthogonalen
+ * Linien (List/Folder/Table). Schaltet Anti-Alias ab → pixel-perfekt
+ * scharfe Strokes. Diagonalen werden minimal stufig, das wirkt aber
+ * bei diesen Icons nicht stoerend.
+ * --------------------------------------------------------------------- */
+.lucide {
+  shape-rendering: geometricPrecision;
+}
+.icon-crisp {
+  shape-rendering: crispEdges;
+}
+
+/* ---------------------------------------------------------------------
+ * Material Symbols Rounded — Apple-naher Look durch Variable Font.
+ * Wird vom Browser pixel-perfekt gerastert, Default-Konfiguration:
+ *   - opsz 24 (optical size = display)
+ *   - wght 400 (regular)
+ *   - FILL 0 (outline; per Klasse .ms-fill umschaltbar)
+ *   - GRAD 0
+ * --------------------------------------------------------------------- */
+.material-symbols-rounded {
+  font-family: 'Material Symbols Rounded';
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  user-select: none;
+}
+.material-symbols-rounded.ms-fill {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* ---------------------------------------------------------------------
+ * Mobile Touch-Target Optimierung (Phase 16, 2026-05-06)
+ * Apple HIG empfiehlt 44pt Minimum, Android 48dp. Wir landen in der Mitte.
+ *
+ * Angewendet nur auf <= 767px (mobile breakpoint) damit Desktop kompakt
+ * bleibt. Pickt sich nur Inputs/Buttons mit den kleinen Tailwind-Klassen.
+ * --------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  /* Search-/Toolbar-Inputs h-8 (32px) → h-10 (40px) */
+  input[type="text"].h-8,
+  input[type="search"].h-8,
+  input[type="email"].h-8 {
+    height: 2.5rem;
+  }
+  /* Kleine Buttons im Toolbar-Stil → groesser fuer Daumen */
+  button.size-7 {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+  button.size-6 {
+    width: 2rem;
+    height: 2rem;
+  }
+  /* Listen-Eintraege: mehr vertikales Padding fuer Daumen-Tap */
+  .py-1.divide-y > *,
+  .py-1\.5.divide-y > * {
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
+  }
+}
+
+/* MUST-5: Druckansicht Stundenplan */
+@media print {
+    /* Sidebar/Toolbar/Slide-Overs unsichtbar */
+    .print\:hidden,
+    aside,
+    nav,
+    [role="navigation"] {
+        display: none !important;
+    }
+    /* Saubere Schwarz-Weiss-Darstellung */
+    body {
+        background: white !important;
+        color: black !important;
+    }
+    /* Stundenplan-Tabelle in voller Breite, ohne Schatten */
+    table {
+        page-break-inside: avoid;
+        border-collapse: collapse !important;
+    }
+    table, th, td {
+        border-color: #999 !important;
+    }
+    /* Sticky-Header normal scrollen lassen */
+    thead {
+        position: static !important;
+    }
+}

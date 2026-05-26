@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- viewport-fit=cover damit der Inhalt unter den iPhone-Notch reichen kann
+         (wir handhaben Safe-Area mit env(safe-area-inset-*)). Maximum-scale=1
+         und user-scalable=no verhindern das pinch-to-zoom-Verhalten in Inputs. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#22c55e" />
+    <meta name="description" content="prilog Chat — Sicherer Schulchat" />
+
+    <title>prilog Chat</title>
+
+    <!-- Browser-Tab-Icon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- iOS: als Standalone-App startbar, Status-Bar transparent ueber dem Inhalt -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="prilog Chat" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Android: Theme-Color-Hint fuer den Adress-Balken im Standalone-Mode -->
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+
+    <!-- Material Symbols Rounded — variable font, perfekt scharf auf jedem
+         Display, durch Browser-Font-Hinting deutlich praeziser als SVG-Icons
+         bei kleinen Groessen. Wird fuer DMS-Toolbar verwendet. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400..700,0..1,-25..200&display=swap" />
+    <script>
+      // Theme: hell als Standard, Dark nur wenn explizit gewaehlt — oder wenn
+      // der User bewusst 'system' eingestellt hat UND das System dunkel laeuft.
+      // Nicht-gesetzter Zustand = hell, weil Schul-Umgebungen meist hell sind
+      // und Whiteboard-/Beamer-Projektion mit hellem UI besser funktioniert.
+      (function() {
+        const stored = localStorage.getItem('prilog-theme');
+        if (stored === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else if (stored === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.classList.add('dark');
+        }
+        // Alle anderen Faelle (kein stored, stored === 'light') → hell
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

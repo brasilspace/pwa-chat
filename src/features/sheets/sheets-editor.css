@@ -1,0 +1,167 @@
+/**
+ * sheets-editor.css — Univer in Prilog-Look bringen.
+ *
+ * Zwei Aufgaben:
+ *   1. Tailwind-Preflight-Resets vom Univer-Container fernhalten (sonst
+ *      sind Toolbar-Buttons platt etc.)
+ *   2. Univer's Default-CSS in der Anmutung an Prilog anpassen — Toolbar-
+ *      Hintergrund, Schrift, Border-Radius, Hover-States, Schriftgroessen.
+ *
+ * Alle Overrides sind auf `.prilog-sheets-host` gescopet damit sie nur
+ * fuer den Editor greifen.
+ */
+
+.prilog-sheets-host {
+  isolation: isolate;
+  /* Prilog-Schrift (matcht den Rest der App) */
+  font-family: var(--font-sans, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
+  font-feature-settings: "ss01", "cv02", "cv11";
+  /* Hintergrund passt zur App */
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* ── Tailwind-Preflight-Resets vom Univer-Container fernhalten ────────── */
+.prilog-sheets-host * { box-sizing: border-box; }
+
+.prilog-sheets-host button {
+  background-color: revert;
+  background-image: revert;
+  /* KEIN border:revert — sonst bekommen Buttons den dicken UA-Default
+     (2px outset). Univers eigene Klassen setzen Borders wo noetig. */
+  border: 0;
+  padding: revert;
+  font: inherit;
+  color: revert;
+  text-align: revert;
+  cursor: revert;
+}
+
+.prilog-sheets-host input,
+.prilog-sheets-host textarea,
+.prilog-sheets-host select {
+  background-color: revert;
+  border: revert;
+  padding: revert;
+  font: inherit;
+  color: revert;
+}
+
+.prilog-sheets-host img { max-width: revert; height: revert; }
+
+
+/* ── Prilog-Anmutung: Univer-Klassen-Overrides ──────────────────────── */
+
+/* Toolbar / Header / Statusbar — neutralerer Hintergrund mit unseren Tokens */
+.prilog-sheets-host .univer-bg-white,
+.prilog-sheets-host .univer-bg-gray-50,
+.prilog-sheets-host .univer-bg-gray-100 {
+  background-color: var(--card) !important;
+}
+
+/* Toolbar-Hover und aktive States in unserem Primary-Tint */
+.prilog-sheets-host .univer-bg-gray-200,
+.prilog-sheets-host .univer-bg-gray-300 {
+  background-color: var(--muted) !important;
+}
+
+/* Border-Farben in Prilog's --border statt Univer-Hellgrau */
+.prilog-sheets-host .univer-border,
+.prilog-sheets-host .univer-border-t,
+.prilog-sheets-host .univer-border-b,
+.prilog-sheets-host .univer-border-l,
+.prilog-sheets-host .univer-border-r,
+.prilog-sheets-host .univer-border-gray-100,
+.prilog-sheets-host .univer-border-gray-200,
+.prilog-sheets-host .univer-border-gray-300 {
+  border-color: var(--border) !important;
+}
+
+/* Text-Farben angleichen */
+.prilog-sheets-host .univer-text-gray-700,
+.prilog-sheets-host .univer-text-gray-800,
+.prilog-sheets-host .univer-text-gray-900 {
+  color: var(--foreground) !important;
+}
+
+.prilog-sheets-host .univer-text-gray-400,
+.prilog-sheets-host .univer-text-gray-500,
+.prilog-sheets-host .univer-text-gray-600 {
+  color: var(--muted-foreground) !important;
+}
+
+/* Border-Radius — Buttons und kleine UI-Elemente sehr dezent runden
+   (4px). Prilog's --radius-sm (~10px) waere fuer Toolbar-Buttons zu
+   weich, daher feste 4px hier. */
+.prilog-sheets-host button,
+.prilog-sheets-host .univer-rounded-sm {
+  border-radius: 4px !important;
+}
+
+/* Groessere Container (Dropdowns, Cards) duerfen weicher sein */
+.prilog-sheets-host .univer-rounded-md,
+.prilog-sheets-host .univer-rounded-lg {
+  border-radius: 6px !important;
+}
+
+/* Toolbar-Buttons: alle bekommen den "aktiv"-Look (subtiler Tint im
+   Hintergrund), Hover wird dunkler, Aktiv/Selected noch dunkler.
+   So sind die Tabs (Start/Formulas/Date) optisch konsistent egal ob
+   aktiv oder nicht — der aktive Tab hebt sich nur durch die dunklere
+   Schattierung ab. */
+.prilog-sheets-host .univer-flex button:not([disabled]) {
+  background-color: var(--muted) !important;
+}
+.prilog-sheets-host .univer-flex button:not([disabled]):hover {
+  background-color: color-mix(in oklab, var(--muted) 70%, var(--foreground) 8%) !important;
+}
+.prilog-sheets-host .univer-flex button:not([disabled])[aria-selected="true"],
+.prilog-sheets-host .univer-flex button:not([disabled]).univer-bg-primary-100,
+.prilog-sheets-host .univer-flex button:not([disabled]).univer-bg-primary-50,
+.prilog-sheets-host .univer-flex button.univer-text-primary-600,
+.prilog-sheets-host .univer-flex button.univer-text-primary-500 {
+  background-color: color-mix(in oklab, var(--primary) 14%, var(--background) 86%) !important;
+  color: var(--primary) !important;
+}
+
+/* Inputs/Selects: weniger laut */
+.prilog-sheets-host input[type="text"],
+.prilog-sheets-host input[type="number"],
+.prilog-sheets-host input[type="search"],
+.prilog-sheets-host textarea {
+  background-color: var(--background) !important;
+  border-color: var(--border) !important;
+  color: var(--foreground) !important;
+}
+
+/* Dropdown-/Popover-Menus: mit Prilog-Schatten */
+.prilog-sheets-host [class*="univer-shadow"] {
+  box-shadow: var(--shadow-md, 0 4px 16px -2px rgba(0,0,0,0.08), 0 2px 6px -1px rgba(0,0,0,0.05)) !important;
+}
+
+.prilog-sheets-host [class*="univer-shadow"]:not(.univer-shadow-none) {
+  border: 1px solid var(--border);
+}
+
+/* Scrollbars in unserem dezenten Stil */
+.prilog-sheets-host *::-webkit-scrollbar { width: 10px; height: 10px; }
+.prilog-sheets-host *::-webkit-scrollbar-track { background: transparent; }
+.prilog-sheets-host *::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.prilog-sheets-host *::-webkit-scrollbar-thumb:hover { background: var(--muted-foreground); background-clip: content-box; }
+
+
+/* ── Dark-Mode: Univer kennt unseren Dark-Mode nicht. Wir patchen ──────
+ * die wenigen wirklich auffallenden Stellen. */
+.dark .prilog-sheets-host {
+  /* Univer's Cell-Bereich hat einen festen weissen Canvas — fuer
+     Dark-Mode einen sehr hellen Vordergrund waere zu hart, also
+     belassen wir den Canvas hell und blenden nur Toolbar/Statusbar
+     im Dark-Look ein. So wirkt's wie ein "Dokument-Blatt" (wie
+     Google Docs im Dark-Mode auch). */
+  background-color: var(--background);
+}
