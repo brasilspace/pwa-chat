@@ -7,7 +7,8 @@ const AVATAR_KEY = 'prilog.chat.avatar';
 
 const listeners = new Set<() => void>();
 
-let currentDesign: ChatDesign = (localStorage.getItem(DESIGN_KEY) as ChatDesign) || 'slack';
+// pwa-chat: Default ist 'whatsapp' (Messenger-Look). Voll-Web-Client nutzt 'slack'.
+let currentDesign: ChatDesign = (localStorage.getItem(DESIGN_KEY) as ChatDesign) || 'whatsapp';
 let currentBg: string | null = localStorage.getItem(BG_KEY);
 let currentAvatar: AvatarMode = (localStorage.getItem(AVATAR_KEY) as AvatarMode) || 'initial';
 
