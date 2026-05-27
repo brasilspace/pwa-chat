@@ -283,9 +283,25 @@ export const ChatModule = ({ compact }: { compact?: boolean } = {}): JSX.Element
     // Snap-Punkt), daher feuert der Handler ohne visuellen Konflikt.
     const swipeBackHandlers = useSwipeRightToBack(isMobile, () => navigate('/'));
 
+    if (!spaceId) {
+        // Route ist /spaces/:spaceId/* — wenn spaceId fehlt, ist die URL kaputt.
+        return (
+            <div className="flex h-full items-center justify-center px-6 text-center text-sm text-muted-foreground">
+                Kein Space ausgewählt. Zurück zur Liste und Chat erneut antippen.
+            </div>
+        );
+    }
+    if (!space) {
+        // Space ist noch nicht aus useSpaces() angekommen (Bootstrap laeuft).
+        return (
+            <div className="flex h-full items-center justify-center px-6 text-center text-sm text-muted-foreground">
+                Lade Chat …
+            </div>
+        );
+    }
     if (!matrixRoomId) {
         return (
-            <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+            <div className="flex h-full items-center justify-center px-6 text-center text-sm text-muted-foreground">
                 {t('modules.chat_module.dieser_space_hat_noch_keinen_matrix-raum')}
             </div>
         );
