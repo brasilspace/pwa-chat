@@ -1,0 +1,78 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci --legacy-peer-deps
+
+      - run: npm run build
+        env:
+          VITE_PLATFORM_BASE_URL: /api
+          VITE_MATRIX_BASE_URL: /_matrix
+          VITE_APP_NAME: prilog Chat
+
+      # Upload artifact for PR review
+      - uses: actions/upload-artifact@v4
+        if: github.ref == 'refs/heads/main'
+        with:
+          name: dist
+          path: dist/
+          retention-days: 14
+
+      # Package as tar.gz for provisioning agent
+      - name: Package artifact
+        if: github.ref == 'refs/heads/main'
+        run: tar -czf pwa-chat.tar.gz -C dist .
+
+      # Push to prilog-artifacts repo (latest + versioniert).
+      # Reconcile-Sweep auf api.prilog.chat pullt das Repo regelmäßig
+      # und legt pwa-chat-stable.tar.gz als Symlink auf die freigegebene
+      # Version. Damit ist GHA → CI → Tenants ein automatischer Pfad.
+      - name: Push to prilog-artifacts
+        if: github.ref == 'refs/heads/main'
+        env:
+          DEPLOY_KEY: ${{ secrets.ARTIFACTS_DEPLOY_KEY }}
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+
+          mkdir -p ~/.ssh
+          echo "$DEPLOY_KEY" > ~/.ssh/artifacts_key
+          chmod 600 ~/.ssh/artifacts_key
+          ssh-keyscan github.com >> ~/.ssh/known_hosts 2>/dev/null
+
+          export GIT_SSH_COMMAND="ssh -i ~/.ssh/artifacts_key -o IdentitiesOnly=yes"
+
+          git clone --depth 1 git@github.com:brasilspace/prilog-artifacts.git /tmp/prilog-artifacts
+          cd /tmp/prilog-artifacts
+
+          mkdir -p pwa-chat
+          cp "$GITHUB_WORKSPACE/pwa-chat.tar.gz" "pwa-chat/pwa-chat-latest.tar.gz"
+          cp "$GITHUB_WORKSPACE/pwa-chat.tar.gz" "pwa-chat/pwa-chat-${SHORT_SHA}.tar.gz"
+
+          # stable-Symlink — Default: latest = stable. Wenn man mal eine Version
+          # einfrieren will, manuell auf dem Server umlinken (siehe README).
+          ln -sf "pwa-chat-latest.tar.gz" "pwa-chat/pwa-chat-stable.tar.gz"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add pwa-chat/
+          git commit -m "pwa-chat: Build ${SHORT_SHA}" || echo "Keine Änderungen"
+          git push
