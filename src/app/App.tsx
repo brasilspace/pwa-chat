@@ -16,6 +16,7 @@ import { LoginPage } from '../features/auth/components/login-page';
 import { RequireAuth } from '../features/auth/components/require-auth';
 import { MessengerShell } from '../features/messenger/messenger-shell';
 import { ChatRuntimeProvider } from '../features/chat/chat-runtime-provider';
+import { ErrorBoundary } from './error-boundary';
 
 const LazyChatOnlySettings = lazy(() => import('../features/chat-only/chat-only-settings').then(m => ({ default: m.ChatOnlySettings })));
 const LazyInstallPage = lazy(() => import('../features/chat-only/install-pwa-page').then(m => ({ default: m.InstallPwaPage })));
@@ -51,20 +52,22 @@ function AuthenticatedApp(): JSX.Element {
 }
 
 export const App = (): JSX.Element => (
-    <QueryClientProvider client={queryClient}>
-        <ReactiveBridge />
-        <BrowserRouter>
-            <Routes>
-                <Route path="/login" element={<LoginPage />} />
-                <Route
-                    path="/*"
-                    element={
-                        <RequireAuth>
-                            <AuthenticatedApp />
-                        </RequireAuth>
-                    }
-                />
-            </Routes>
-        </BrowserRouter>
-    </QueryClientProvider>
+    <ErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+            <ReactiveBridge />
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route
+                        path="/*"
+                        element={
+                            <RequireAuth>
+                                <AuthenticatedApp />
+                            </RequireAuth>
+                        }
+                    />
+                </Routes>
+            </BrowserRouter>
+        </QueryClientProvider>
+    </ErrorBoundary>
 );
