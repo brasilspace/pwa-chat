@@ -11,33 +11,101 @@
  * trifft App.tsx basierend auf der Visibility-Matrix.
  */
 
-import { type JSX, useState, useSyncExternalStore, lazy, Suspense } from 'react';
+import { type JSX, useState, useSyncExternalStore, useMemo, lazy, Suspense } from 'react';
 import { Routes, Route, Navigate, useNavigate, useParams } from 'react-router-dom';
-import { Outlet } from 'react-router-dom';
 import { sessionStore } from '@/core/session/session-store';
 import { sessionMachine } from '@/core/session/session-machine';
 import { useSpaces } from '@/features/spaces/use-spaces';
-import { useWorkflowEvents } from '@/features/workflow/use-workflow-events';
+import { chatStore } from '@/features/chat/chat-store';
+import { buildTree, buildUnreadMap, fallbackColor, type SpaceData, type SpaceNode } from '@/features/spaces/space-tree';
 import { PaymentSuspensionBanner } from '@/features/payment/payment-suspension-banner';
-import { cn } from '@/lib/utils';
-import { Settings } from 'lucide-react';
 import { MaterialIcon } from '@/components/ui/material-icon';
+import { cn } from '@/lib/utils';
 import { useT } from "@/lib/i18n/use-t";
 
 const LazyChatModule = lazy(() =>
     import('../modules/chat-module').then(m => ({ default: m.ChatModule })),
 );
+// pwa-chat: reduzierte Settings statt Voll-App-Settings
 const LazySettings = lazy(() =>
-    import('../settings/settings-page').then(m => ({ default: m.SettingsPage })),
+    import('../chat-only/chat-only-settings').then(m => ({ default: m.ChatOnlySettings })),
 );
 
 // ─── Space-Liste ────────────────────────────────────────────────────────────
+
+// Rekursive Zeile fuer den Hierarchie-Baum.
+// - depth bestimmt die Einrueckung
+// - Unread-Aggregat aus Hook
+// - Parent-Knoten (mit Kindern) sind auch klickbar, falls sie selbst einen
+//   Chat-Raum haben. Reine Ordner-Spaces blenden den Klick aus.
+function SpaceTreeRow({ node, depth, unreadMap, onOpen }: {
+    node: SpaceNode;
+    depth: number;
+    unreadMap: Map<string, { unread: number; highlight: number }>;
+    onOpen: (id: string) => void;
+}): JSX.Element {
+    const space = node.space as SpaceData & { description?: string };
+    const agg = unreadMap.get(space.id);
+    const unread = agg?.unread ?? 0;
+    const highlight = agg?.highlight ?? 0;
+    const color = space.color || node.rootColor || fallbackColor(space.name);
+    const hasOwnChat = !!(space.matrixChatRoomId ?? space.matrixRoomId);
+    return (
+        <>
+            <button
+                onClick={() => hasOwnChat && onOpen(space.id)}
+                disabled={!hasOwnChat}
+                style={{ paddingLeft: 16 + depth * 18 }}
+                className="flex w-full items-center gap-3 py-3 pr-4 text-left transition-colors hover:bg-muted/50 disabled:cursor-default disabled:hover:bg-transparent"
+            >
+                <div
+                    className="flex size-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white"
+                    style={{ backgroundColor: color }}
+                >
+                    {space.name.charAt(0).toUpperCase()}
+                </div>
+                <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                        <span className={`text-sm truncate ${unread > 0 ? 'font-semibold' : 'font-medium'}`}>{space.name}</span>
+                        {unread > 0 && (
+                            <span className={`inline-flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-bold text-white ${highlight > 0 ? 'bg-red-500' : 'bg-primary'}`}>
+                                {unread > 99 ? '99+' : unread}
+                            </span>
+                        )}
+                        {!hasOwnChat && (
+                            <span className="text-[10px] text-muted-foreground">Ordner</span>
+                        )}
+                    </div>
+                    {space.description && (
+                        <p className="text-xs text-muted-foreground truncate mt-0.5">{space.description}</p>
+                    )}
+                </div>
+            </button>
+            {node.children.map((child) => (
+                <SpaceTreeRow key={child.space.id} node={child} depth={depth + 1} unreadMap={unreadMap} onOpen={onOpen} />
+            ))}
+        </>
+    );
+}
 
 function MessengerSpaceList(): JSX.Element {
     const t = useT();
     const navigate = useNavigate();
     const { spaces, loading } = useSpaces();
     const session = useSyncExternalStore(sessionStore.subscribe, sessionStore.getSnapshot);
+    const chatSnapshot = useSyncExternalStore(chatStore.subscribe, chatStore.getSnapshot);
+
+    // Hierarchie bauen: Parent-Spaces oben, Kinder eingerueckt darunter.
+    // DISABLED-Spaces ausblenden, Spaces ohne Matrix-Raum auch (kein Chat).
+    const visibleSpaces = useMemo(() => spaces.filter((s) => {
+        const roomId = (s as { matrixChatRoomId?: string; matrixRoomId?: string }).matrixChatRoomId
+            ?? (s as { matrixChatRoomId?: string; matrixRoomId?: string }).matrixRoomId;
+        const mode = (s as { mode?: string }).mode;
+        return !!roomId && mode !== 'DISABLED';
+    }), [spaces]);
+
+    const tree = useMemo(() => buildTree(visibleSpaces as SpaceData[]), [visibleSpaces]);
+    const unreadMap = useMemo(() => buildUnreadMap(tree, chatSnapshot), [tree, chatSnapshot]);
 
     return (
         <div className="flex h-full flex-col bg-background">
@@ -84,27 +152,8 @@ function MessengerSpaceList(): JSX.Element {
                     </div>
                 ) : (
                     <div className="divide-y">
-                        {spaces.map(space => (
-                            <button
-                                key={space.id}
-                                onClick={() => navigate(`/spaces/${space.id}/chat`)}
-                                className="flex w-full items-center gap-3 px-4 py-3.5 text-left hover:bg-muted/50 transition-colors"
-                            >
-                                <div
-                                    className="flex size-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white"
-                                    style={{ backgroundColor: space.color || '#6366f1' }}
-                                >
-                                    {space.name.charAt(0).toUpperCase()}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium truncate">{space.name}</span>
-                                    </div>
-                                    {space.description && (
-                                        <p className="text-xs text-muted-foreground truncate mt-0.5">{space.description}</p>
-                                    )}
-                                </div>
-                            </button>
+                        {tree.map((node) => (
+                            <SpaceTreeRow key={node.space.id} node={node} depth={0} unreadMap={unreadMap} onOpen={(id) => navigate(`/spaces/${id}/chat`)} />
                         ))}
                     </div>
                 )}

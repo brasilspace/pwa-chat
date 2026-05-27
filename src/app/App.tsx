@@ -34,16 +34,17 @@ const queryClient = new QueryClient({
 });
 
 function AuthenticatedApp(): JSX.Element {
+    // MessengerShell hat eigene <Routes>-Logik fuer index / spaces / settings /
+    // absence-report — deshalb hier nicht nochmal per Pfad matchen, sondern
+    // die Shell unter /* einmal mounten und intern matchen lassen.
     return (
         <ChatRuntimeProvider>
             <Routes>
-                <Route path="/" element={<MessengerShell />} />
-                <Route path="/spaces/:spaceId/*" element={<MessengerShell />} />
                 <Route path="/dm/:recipientId" element={<Suspense fallback={<div />}><LazyDmChat /></Suspense>} />
-                <Route path="/settings" element={<Suspense fallback={<div />}><LazyChatOnlySettings /></Suspense>} />
+                <Route path="/chat-settings" element={<Suspense fallback={<div />}><LazyChatOnlySettings /></Suspense>} />
                 <Route path="/install" element={<Suspense fallback={<div />}><LazyInstallPage /></Suspense>} />
                 <Route path="/offline" element={<Suspense fallback={<div />}><LazyOfflinePage /></Suspense>} />
-                <Route path="*" element={<Navigate to="/" replace />} />
+                <Route path="/*" element={<MessengerShell />} />
             </Routes>
         </ChatRuntimeProvider>
     );
