@@ -17,6 +17,8 @@ import { RequireAuth } from '../features/auth/components/require-auth';
 import { MessengerShell } from '../features/messenger/messenger-shell';
 import { ChatRuntimeProvider } from '../features/chat/chat-runtime-provider';
 import { ErrorBoundary } from './error-boundary';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { ToastContainer } from '@/components/ui/toast';
 
 const LazyChatOnlySettings = lazy(() => import('../features/chat-only/chat-only-settings').then(m => ({ default: m.ChatOnlySettings })));
 const LazyInstallPage = lazy(() => import('../features/chat-only/install-pwa-page').then(m => ({ default: m.InstallPwaPage })));
@@ -54,20 +56,23 @@ function AuthenticatedApp(): JSX.Element {
 export const App = (): JSX.Element => (
     <ErrorBoundary>
         <QueryClientProvider client={queryClient}>
-            <ReactiveBridge />
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route
-                        path="/*"
-                        element={
-                            <RequireAuth>
-                                <AuthenticatedApp />
-                            </RequireAuth>
-                        }
-                    />
-                </Routes>
-            </BrowserRouter>
+            <TooltipProvider delayDuration={200}>
+                <ReactiveBridge />
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/login" element={<LoginPage />} />
+                        <Route
+                            path="/*"
+                            element={
+                                <RequireAuth>
+                                    <AuthenticatedApp />
+                                </RequireAuth>
+                            }
+                        />
+                    </Routes>
+                </BrowserRouter>
+                <ToastContainer />
+            </TooltipProvider>
         </QueryClientProvider>
     </ErrorBoundary>
 );
